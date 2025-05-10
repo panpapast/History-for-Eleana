@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Κουίζ Ιστορίας Β' Γυμνασίου</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+    .quiz-container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .question { font-size: 18px; margin-bottom: 10px; }
+    .options button { display: block; margin: 8px 0; padding: 10px; border: none; background: #e0e0e0; border-radius: 5px; cursor: pointer; }
+    .options button:hover { background: #d0d0d0; }
+    .options button.correct { background-color: #8bc34a; color: white; }
+    .options button.wrong { background-color: #f44336; color: white; }
+    .result { margin-top: 20px; font-size: 20px; text-align: center; }
+    #restartBtn { display: none; margin-top: 20px; padding: 10px 20px; background-color: #2196f3; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    #restartBtn:hover { background-color: #1976d2; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div id="quiz">
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <div class="result" id="result"></div>
+      <button id="restartBtn" onclick="restartQuiz()">Επανάληψη</button>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      { question: "Ποια ήταν η σημασία της μεταφοράς της πρωτεύουσας στην Κωνσταντινούπολη;", options: ["Προκάλεσε τη διάλυση της Ρωμαϊκής Αυτοκρατορίας", "Ενίσχυσε τη Δυτική Ρωμαϊκή Αυτοκρατορία", "Σηματοδότησε την ίδρυση της Βυζαντινής Αυτοκρατορίας", "Περιόρισε τη δύναμη του Χριστιανισμού"], correct: 2 },
+      { question: "Ποιος ήταν ο Κωνσταντίνος ο Μέγας;", options: ["Ο πρώτος Πάπας της Ρώμης", "Ο τελευταίος αυτοκράτορας του Βυζαντίου", "Ο αυτοκράτορας που μετέφερε την πρωτεύουσα στην Ανατολή", "Ο ιδρυτής της Ρωμαϊκής Αυτοκρατορίας"], correct: 2 },
+      { question: "Τι προέβλεπε το Διάταγμα των Μεδιολάνων;", options: ["Την καταστροφή των ειδώλων", "Την απαγόρευση του Χριστιανισμού", "Την ίδρυση της Κωνσταντινούπολης", "Την ανεξιθρησκία και αναγνώριση του Χριστιανισμού"], correct: 3 },
+      // ... (περισσότερες ερωτήσεις εδώ όπως πριν)
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const resultEl = document.getElementById('result');
+    const restartBtn = document.getElementById('restartBtn');
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = '';
+      resultEl.textContent = '';
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(index);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected) {
+      const buttons = optionsEl.querySelectorAll('button');
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === quizData[currentQuestion].correct) {
+          btn.classList.add('correct');
+          if (i === selected) score++;
+        } else if (i === selected) {
+          btn.classList.add('wrong');
+        }
+      });
+
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+          loadQuestion();
+        } else {
+          resultEl.textContent = `Τέλος! Σκορ: ${score} / ${quizData.length}`;
+          restartBtn.style.display = 'inline-block';
+        }
+      }, 1000);
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      restartBtn.style.display = 'none';
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
